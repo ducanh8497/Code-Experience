@@ -46,7 +46,13 @@ console.log(formatNumber(1250000))
 - **CRUD React-hook**
 
 ```
-const [listInterview, setListInterview] = useState([]);
+const [listObj, setListObj] = useState();
+var Obj = {
+  "studentId": "15130008",
+  "name": "Phan Duc Anh",
+  "dateOfBirth": "08/04/1997"
+}
+setListInterview((listObj) => [...listObj, Obj]);
 ```
 
 
