@@ -43,4 +43,10 @@ const formatNumber = (num) => {
 };
 console.log(formatNumber(1250000))
 ```
+- **CRUD React-hook**
+
+```
+const [listInterview, setListInterview] = useState([]);
+```
+
 
