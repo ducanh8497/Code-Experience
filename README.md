@@ -6,11 +6,11 @@ Sắp xếp file json theo anphabe
 
 var unordered = {
   "Forgot Password": "Forgot Password",
-	"ARR": "ARR",
+  "ARR": "ARR",
   "Equipment Maintenance": "Equipment Maintenance",
   "Department": "Department",
-	"Access": "Access",
-	"Accident": "Accident"
+  "Access": "Access",
+  "Accident": "Accident"
 }
 
 var ordered = {};
