@@ -52,7 +52,7 @@ var Obj = {
   "name": "Phan Duc Anh",
   "dateOfBirth": "08/04/1997"
 }
-setListInterview((listObj) => [...listObj, Obj]);
+setListObj((listObj) => [...listObj, Obj]);
 ```
 
 
