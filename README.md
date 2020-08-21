@@ -2,7 +2,8 @@
 
 **Push lên Repositories không cần đăng nhập** : remote set-url origin https://[username]:[password]@github.com/ducanh847/shop.git 
 
-**Sắp xếp file json theo anphabe**
+- **Sắp xếp file json theo anphabe**
+
 ```
 var unordered = { 
   "Forgot Password": "Forgot Password",
