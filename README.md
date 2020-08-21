@@ -52,7 +52,19 @@ var Obj = {
   "name": "Phan Duc Anh",
   "dateOfBirth": "08/04/1997"
 }
+// add new item to list
 setListObj((listObj) => [...listObj, Obj]);
+// edit item
+var indexObj = listObj.findIndex((x) => x.studentId === [id]);
+if(indexObj !== -1){
+  listObj[indexObj].studentId = [newID];
+  listObj[indexObj].name = [newName];
+  listObj[indexObj].dateOfBirth = [newDateOfBirth];
+}
+// delete item
+var listAfterRemove = listobj.filter((x) => x.studentId !== [id]);
+setListObj(listAfterRemove);
+
 ```
 
 
