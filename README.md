@@ -22,3 +22,15 @@ Object.keys(unordered).sort().forEach(function (key) {
 });
 console.log(JSON.stringify(ordered))
 ```
+
+- **Thêm property vào object**
+
+```
+var Obj = {
+  "studentId": "15130008",
+  "name": "Phan Duc Anh",
+  "dateOfBirth": "08/04/1997"
+}
+Object.assign(Obj, { address: "TP.HCM" });
+console.log(Obj)
+```
