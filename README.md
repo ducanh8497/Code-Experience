@@ -34,3 +34,13 @@ var Obj = {
 Object.assign(Obj, { address: "TP.HCM" });
 console.log(Obj)
 ```
+
+- **Format number tiền tệ**
+
+```
+const formatNumber = (num) => {
+  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+};
+console.log(formatNumber(1250000))
+```
+
