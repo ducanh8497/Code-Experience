@@ -78,6 +78,16 @@ GO
 -- Create Date: <Create Date, , >
 -- Description: <Description, , >
 -- =============================================
+/****** Object:  StoredProcedure [dbo].[usp_SearchAppointment]    Script Date: 11/10/2020 1:48:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:      <Author, , Name>
+-- Create Date: <Create Date, , >
+-- Description: <Description, , >
+-- =============================================
 ALTER PROCEDURE [dbo].[usp_SearchAppointment]
 (
     @FirstName VARCHAR(200),
@@ -105,7 +115,8 @@ BEGIN
 		   AND (ISNULL(@Email,'') = '' OR LOWER(p.Patient_Email) LIKE '%' + LOWER(@Email) + '%')
 		   AND (@DateOfBirth IS NULL OR TRY_CONVERT(DATE, p.Patient_DOB) = @DateOfBirth)
 		   AND (ISNULL(@Covid, '') = '' OR LOWER(p.COVID) LIKE LOWER(@Covid) + '%')
-		   AND ISNULL(p.[GUID],'') <> '';
+		   AND ISNULL(p.[GUID],'') <> ''
+		   AND p.IsDeleted = 0;
 
     SELECT COUNT(1) FROM #appId;
 	--SELECT * FROM #appId
@@ -124,10 +135,7 @@ BEGIN
 		   p.Form_Date as SampleSubmissionDate,
 		   p.Sample_Date as SampleCollectionDate,
 		   p.Patient_Mobile as PatientMobile,
-		   (case  
-			when(select count([User_ID]) from Users u where p.[User_Id] = u.[User_ID]) > 0 then 1
-			else 0 end
-			) as isRegister
+		   IIF(ISNULL(p.[Username], 0) > 0, 1, 0) AS IsRegister
 	       FROM dbo.Patient AS p 
 		 WHERE (SELECT COUNT(1) FROM #appId) > 0 AND p.Patient_Id IN (SELECT Patient_Id FROM #appId)
 		 ORDER BY p.Patient_Id DESC OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;  
@@ -135,11 +143,12 @@ BEGIN
 
 	DROP TABLE #appId;
 END
+
 ```
 
 - **Search Patient**
 ```
-/****** Object:  StoredProcedure [dbo].[usp_SearchPatient]    Script Date: 10/28/2020 2:05:39 PM ******/
+/****** Object:  StoredProcedure [dbo].[usp_SearchPatient]    Script Date: 11/10/2020 1:55:43 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -163,16 +172,16 @@ BEGIN
 	PRINT STR(@Take);
 	SELECT p.Patient_Id into #patientId
 	       FROM dbo.Patient AS p
-		   WHERE (ISNULL(@FirstName,'') = '' OR LOWER(p.Patient_First) LIKE LOWER(@FirstName) + '%')
-		   AND (ISNULL(@LastName,'') = '' OR LOWER(p.Patient_Last) LIKE LOWER(@LastName) + '%')
+		   WHERE (ISNULL(@FirstName,'') = '' OR p.Patient_First LIKE @FirstName + '%')
+		   AND (ISNULL(@LastName,'') = '' OR p.Patient_Last LIKE @LastName + '%')
 		   AND (ISNULL(@Phone,'') = '' OR p.Patient_Phone LIKE @Phone + '%' OR p.Patient_Mobile LIKE @Phone + '%')
 		   /*AND (ISNULL(@Phone,'') = '' OR REPLACE(REPLACE(REPLACE(REPLACE(p.Patient_Phone,'-', '' ),'(', ''), ')', ''), ' ', '') LIKE '%' + @Phone + '%' 
 		                               OR REPLACE(REPLACE(REPLACE(REPLACE(p.Patient_Mobile,'-', '' ),'(', ''), ')', ''), ' ', '') LIKE '%' + @Phone + '%')*/
-		   AND (ISNULL(@Email,'') = '' OR LOWER(p.Patient_Email) LIKE '%' + LOWER(@Email) + '%')
+		   AND (ISNULL(@Email,'') = '' OR p.Patient_Email LIKE '%' + @Email + '%')
 		   AND (@DateOfBirth IS NULL OR TRY_CONVERT(DATE, p.Patient_DOB) = @DateOfBirth)
-		   AND (ISNULL(@Covid, '') = '' OR p.COVID LIKE LOWER(@Covid) + '%')
+		   AND (ISNULL(@Covid, '') = '' OR p.COVID LIKE @Covid + '%')
 		   AND ISNULL(p.[GUID],'') <> ''
-		   AND ISNULL(@SiteCode,'') = p.Provider_Site_Code;
+		   AND ISNULL(@SiteCode,'') = p.Site_Code;
 
     SELECT COUNT(1) FROM #patientId;
 
@@ -191,13 +200,16 @@ BEGIN
 		 , p.Patient_Suffix AS Suffix
 		 , p.COVID AS Covid
 		 , p.Patient_Mobile AS PatientMobile
-		 , IIF(ISNULL(p.[User_Id], 0) > 0, 1, 0) AS IsRegister
+		 , IIF(ISNULL(p.[Username], 0) > 0, 1, 0) AS IsRegister
 		 FROM dbo.Patient AS p
 		 WHERE (SELECT COUNT(1) FROM #patientId) > 0 AND p.Patient_Id IN (SELECT Patient_Id FROM #patientId) AND IsDeleted = 0
 		 ORDER BY p.Patient_Id DESC OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;  
 
 	DROP TABLE #patientId;
 END
+
+
+
 
 
 
