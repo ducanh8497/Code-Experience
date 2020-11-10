@@ -135,7 +135,10 @@ BEGIN
 		   p.Form_Date as SampleSubmissionDate,
 		   p.Sample_Date as SampleCollectionDate,
 		   p.Patient_Mobile as PatientMobile,
-		   IIF(ISNULL(p.[Username], 0) > 0, 1, 0) AS IsRegister
+		   (case  
+			when(select count([Username]) from Patient u where p.[GUID] = u.[GUID]) > 0 then 1
+			else 0 end
+			) as isRegister
 	       FROM dbo.Patient AS p 
 		 WHERE (SELECT COUNT(1) FROM #appId) > 0 AND p.Patient_Id IN (SELECT Patient_Id FROM #appId)
 		 ORDER BY p.Patient_Id DESC OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;  
